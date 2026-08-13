@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 plt.style.use("dark_background")
-plt.figure(figsize=(10, 6))
 
 def load_data(path):
     return pd.read_csv(path)
@@ -98,6 +97,29 @@ def scale_data(X_train, X_test):
     return X_train_scaled, X_test_scaled, scaler
 
 
+def prepare_data(path):
+    df = load_data(path)
+
+    df = check_duplicates(df)
+
+    X_train, X_test, y_train, y_test = split_data(df)
+
+    X_train_scaled, X_test_scaled, scaler = scale_data(
+        X_train,
+        X_test
+    )
+
+    return (
+        X_train,
+        X_test,
+        X_train_scaled,
+        X_test_scaled,
+        y_train,
+        y_test,
+        scaler
+    )
+
+
 def plot_class_distribution(df):
     df["Class"].value_counts().plot(kind="bar")
     plt.title("Class Distribution")
@@ -160,33 +182,17 @@ if __name__ == "__main__":
     df = load_data("data/creditcard.csv")
 
     check_dataset_info(df)
-
     check_missing_values(df)
-
     df = check_duplicates(df)
 
     check_class_distribution(df)
-
     analyze_amount(df)
-
     analyze_time(df)
-
     correlation_analysis(df)
-
     descriptive_statistics(df)
 
     plot_class_distribution(df)
-
     plot_amount_distribution(df)
-
     plot_time_distribution(df)
-
     plot_amount_by_class(df)
-
     plot_correlation_heatmap(df)
-
-    X_train, X_test, y_train, y_test = split_data(df)
-
-    X_train_scaled, X_test_scaled, scaler = scale_data(
-    X_train,
-    X_test)
