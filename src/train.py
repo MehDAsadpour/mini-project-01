@@ -8,43 +8,30 @@ from sklearn.metrics import(accuracy_score,
                             f1_score,
                             confusion_matrix)
 
-X_train,X_test,X_train_scaled,X_test_scaled,y_train,y_test,scaler = prepare_data("data/creditcard.csv")
+def evaluate_model(model,X_test,y_test):
+    y_pred = model.predict(X_test)
+    print("Recall :",recall_score(y_test,y_pred))
+    print("Precision :",precision_score(y_test,y_pred))
+    print("F1 Score :",f1_score(y_test,y_pred))
+    cm = confusion_matrix(y_test,y_pred)
+    print("confusion matrix :\n",cm)
+    print("Accuracy :",accuracy_score(y_test,y_pred))
+    print('_'*100)
 
-logistic_model = LogisticRegression()
+X_train,X_test,X_train_scaled,X_test_scaled,y_train,y_test,scaler = prepare_data(
+    "data/creditcard.csv"
+    )
+
+logistic_model = LogisticRegression(random_state=42)
 logistic_model.fit(X_train_scaled,y_train)
-y_pred_logistic_model = logistic_model.predict(X_test_scaled)
-
-print("Recall :",recall_score(y_test,y_pred_logistic_model))
-print("Precision :",precision_score(y_test,y_pred_logistic_model))
-print("F1 Score :",f1_score(y_test,y_pred_logistic_model))
-cm_logistic_model = confusion_matrix(y_test,y_pred_logistic_model)
-print("confusion matrix :\n",cm_logistic_model)
-print("Accuracy :",accuracy_score(y_test,y_pred_logistic_model))
-
-print('_'*100)
+evaluate_model(logistic_model,X_test_scaled,y_test)
 
 # k = 5 (default)
 knn_model = KNeighborsClassifier()
 knn_model.fit(X_train_scaled,y_train)
-y_pred_knn_model = knn_model.predict(X_test_scaled)
+evaluate_model(knn_model,X_test_scaled,y_test)
 
-print("Recall :",recall_score(y_test,y_pred_knn_model))
-print("Precision :",precision_score(y_test,y_pred_knn_model))
-print("F1 Score :",f1_score(y_test,y_pred_knn_model))
-cm_knn_model = confusion_matrix(y_test,y_pred_knn_model)
-print("confusion matrix :\n",cm_knn_model)
-print("Accuracy :",accuracy_score(y_test,y_pred_knn_model))
-
-print('_'*100)
-
-# unlimit baseline decision tree (possible overfitting)
-decision_tree_model = DecisionTreeClassifier()
+# Unlimited-depth baseline Decision Tree (possible overfitting)
+decision_tree_model = DecisionTreeClassifier(random_state=42)
 decision_tree_model.fit(X_train,y_train)
-y_pred_decision_tree_model = decision_tree_model.predict(X_test)
-
-print("Recall :",recall_score(y_test,y_pred_decision_tree_model))
-print("Precision :",precision_score(y_test,y_pred_decision_tree_model))
-print("F1 Score :",f1_score(y_test,y_pred_decision_tree_model))
-cm_decision_tree_model = confusion_matrix(y_test,y_pred_decision_tree_model)
-print("confusion matrix :\n",cm_decision_tree_model)
-print("Accuracy :",accuracy_score(y_test,y_pred_decision_tree_model))
+evaluate_model(decision_tree_model,X_test,y_test)
