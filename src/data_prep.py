@@ -88,15 +88,6 @@ def split_data(df):
     return X_train, X_test, y_train, y_test
 
 
-def scale_data(X_train, X_test):
-    scaler = StandardScaler()
-
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    return X_train_scaled, X_test_scaled, scaler
-
-
 def prepare_data(path):
     df = load_data(path)
 
@@ -104,20 +95,16 @@ def prepare_data(path):
 
     X_train, X_test, y_train, y_test = split_data(df)
 
-    X_train_scaled, X_test_scaled, scaler = scale_data(
-        X_train,
-        X_test
-    )
-
     return (
         X_train,
         X_test,
-        X_train_scaled,
-        X_test_scaled,
         y_train,
         y_test,
-        scaler
     )
+
+
+def get_scaler():
+    return StandardScaler()
 
 
 def plot_class_distribution(df):
