@@ -186,17 +186,7 @@ if __name__ == "__main__":
     plot_correlation_heatmap(df)
 
     X_train, X_test, y_train, y_test = split_data(df)
-    print("Train:")
-    print(y_train.value_counts())
-    print(y_train.value_counts(normalize=True) * 100)
-
-    print("\nTest:")
-    print(y_test.value_counts())
-    print(y_test.value_counts(normalize=True) * 100)
 
     X_train_scaled, X_test_scaled, scaler = scale_data(
     X_train,
     X_test)
-
-    print(X_train_scaled.mean(axis=0))
-    print(X_train_scaled.std(axis=0))
