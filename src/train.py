@@ -16,7 +16,7 @@ from data_prep import prepare_data,get_scaler
 def evaluate_model(model, X_test, y_test,model_name):
     y_pred = model.predict(X_test)
 
-    print(f"\n==={model_name}===\n")
+    print(f"\n*** {model_name} ***\n")
     print("Recall :", recall_score(y_test, y_pred))
     print("Precision :", precision_score(y_test, y_pred))
     print("F1 Score :", f1_score(y_test, y_pred))
@@ -28,9 +28,10 @@ def evaluate_model(model, X_test, y_test,model_name):
     print("_" * 100)
 
 
-def evaluate_train_model(model, X_train, y_train):
+def evaluate_train_model(model, X_train, y_train,model_name):
     y_pred_train = model.predict(X_train)
 
+    print(f"\n** {model_name} **\n")
     print("Train Recall :", recall_score(y_train, y_pred_train))
     print("Train Precision :", precision_score(y_train, y_pred_train))
     print("Train F1 Score :", f1_score(y_train, y_pred_train))
@@ -154,9 +155,39 @@ evaluate_model(
 # Experiment 2: KNN Hyperparameter Analysis
 #==============================================================
 
+# KNN
 for k in [1, 5, 20]:
     knn_pipeline.set_params(model__n_neighbors=k)
 
     knn_pipeline.fit(X_train, y_train)
 
     evaluate_model(knn_pipeline, X_test, y_test,f"KNN Hyperparameter Analysis : k = {k}")
+
+#Decision Tree
+decision_tree_model = DecisionTreeClassifier(
+    random_state=42
+)
+
+for depth in [2, 5, 10, None]:
+    decision_tree_model.set_params(
+        max_depth=depth
+    )
+
+    decision_tree_model.fit(
+        X_train,
+        y_train
+    )
+
+    evaluate_model(
+        decision_tree_model,
+        X_test,
+        y_test,
+        f"Decision Tree - test - max_depth={depth}"
+    )
+
+    evaluate_train_model(
+        decision_tree_model,
+        X_train,
+        y_train,
+        f"Decision Tree - Train - max_depth={depth}"
+    )
