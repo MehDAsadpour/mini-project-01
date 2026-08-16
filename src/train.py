@@ -10,7 +10,7 @@ from sklearn.metrics import (
     f1_score,
     confusion_matrix
 )
-
+import joblib
 from data_prep import prepare_data,get_scaler
 
 def evaluate_model(model, X_test, y_test,model_name):
@@ -290,4 +290,20 @@ cross_validate_threshold(
     cv,
     threshold=0.5,
     model_name="KNN - k=5"
+)
+
+# ==============================================================
+# Final Model
+# ==============================================================
+
+final_knn_pipeline = Pipeline([
+    ("scaler", get_scaler()),
+    ("model", KNeighborsClassifier(n_neighbors=5))
+])
+
+final_knn_pipeline.fit(X_train, y_train)
+
+joblib.dump(
+    final_knn_pipeline,
+    "models/model.pkl"
 )
