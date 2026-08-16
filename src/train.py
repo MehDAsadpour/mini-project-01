@@ -35,6 +35,8 @@ def evaluate_train_model(model, X_train, y_train,model_name):
     print("Train Recall :", recall_score(y_train, y_pred_train))
     print("Train Precision :", precision_score(y_train, y_pred_train))
     print("Train F1 Score :", f1_score(y_train, y_pred_train))
+    print("Train Accuracy :", accuracy_score(y_train, y_pred_train))
+    print("_" * 100)
 
 
 def cross_validate_model(model, X, y, cv,model_name):
@@ -67,6 +69,46 @@ def evaluate_threshold(model, X_test, y_test, threshold):
     print("F1 Score :", f1_score(y_test, y_pred))
 
     print("Confusion Matrix :\n", confusion_matrix(y_test, y_pred))
+    print("_" * 100)
+
+
+def cross_validate_threshold(model, X, y, cv, threshold, model_name):
+    precision_scores = []
+    recall_scores = []
+    f1_scores = []
+
+    for train_idx, val_idx in cv.split(X, y):
+
+        X_train_cv = X.iloc[train_idx]
+        X_val_cv = X.iloc[val_idx]
+
+        y_train_cv = y.iloc[train_idx]
+        y_val_cv = y.iloc[val_idx]
+
+        model.fit(X_train_cv, y_train_cv)
+
+        y_proba = model.predict_proba(X_val_cv)[:, 1]
+
+        y_pred = (y_proba >= threshold).astype(int)
+
+        precision_scores.append(
+            precision_score(y_val_cv, y_pred)
+        )
+
+        recall_scores.append(
+            recall_score(y_val_cv, y_pred)
+        )
+
+        f1_scores.append(
+            f1_score(y_val_cv, y_pred)
+        )
+
+    print(f"\n=== {model_name} | Threshold = {threshold} ===")
+
+    print("Mean Precision :", sum(precision_scores) / len(precision_scores))
+    print("Mean Recall :", sum(recall_scores) / len(recall_scores))
+    print("Mean F1 :", sum(f1_scores) / len(f1_scores))
+
     print("_" * 100)
 
 
@@ -178,7 +220,7 @@ for k in [1, 5, 20]:
 
     evaluate_model(knn_pipeline, X_test, y_test,f"KNN Hyperparameter Analysis : k = {k}")
 
-# #Decision Tree
+#Decision Tree
 decision_tree_model = DecisionTreeClassifier(
     random_state=42
 )
@@ -208,10 +250,44 @@ for depth in [2, 5, 10, None]:
     )
 
 # Logistic Regression
+print("\n<<<< Logistic Regression Threshold Analysis >>>>\n")
 for threshold in [0.3, 0.5, 0.7]:
     evaluate_threshold(
         logistic_pipeline,
         X_test,
         y_test,
         threshold
+)
+
+# Finilizing
+print("\n<<<< KNN Threshold Analysis >>>>\n")
+for threshold in [0.3, 0.4, 0.5, 0.6, 0.7]:
+    y_proba = knn_pipeline.predict_proba(X_test)[:, 1]
+    y_pred = (y_proba >= threshold).astype(int)
+
+    print(f"\n=== Threshold = {threshold} ===")
+
+    print("Recall :", recall_score(y_test, y_pred))
+    print("Precision :", precision_score(y_test, y_pred))
+    print("F1 Score :", f1_score(y_test, y_pred))
+    print("Confusion Matrix :\n", confusion_matrix(y_test, y_pred))
+    print("_"*100)
+
+print("\n<<<< CV for KNN with threshold {0.3} >>>>\n")
+cross_validate_threshold(
+    knn_pipeline,
+    X_train,
+    y_train,
+    cv,
+    threshold=0.3,
+    model_name="KNN - k=5"
+)
+print("\n<<<< CV for KNN with threshold {0.5} >>>>\n")
+cross_validate_threshold(
+    knn_pipeline,
+    X_train,
+    y_train,
+    cv,
+    threshold=0.5,
+    model_name="KNN - k=5"
 )
