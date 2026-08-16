@@ -7,3 +7,6 @@ __pycache__/
 
 # Dataset
 data/*.csv
+
+# Models
+models/*.pkl
