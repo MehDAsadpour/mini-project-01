@@ -1,7 +1,7 @@
 {
     "prediction": "Normal",
     "class_id": 0,
-    "probability": 0.0,
+    "probability": 1.0,
     "threshold": 0.3,
     "status": "success"
 }

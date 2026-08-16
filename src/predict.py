@@ -27,6 +27,7 @@ def predict(model, X):
         prediction = "Fraud"
     else:
         prediction = "Normal"
+        probability = 1 - probability
 
     return {
         "prediction": prediction,
