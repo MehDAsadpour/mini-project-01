@@ -110,40 +110,20 @@ This demonstrates why Accuracy alone was not appropriate for this problem.
 
 ### 5. What was the trade-off between False Positives and False Negatives?
 
-Our threshold experiment demonstrated the expected trade-off.
+The baseline results showed a trade-off between False Positives and False Negatives.
 
-At threshold `0.5`:
+For example, KNN achieved:
 
-```text
-False Positives = 3
-False Negatives = 30
-Recall          = 0.684
-Precision       = 0.956
-F1              = 0.798
-```
+False Positives = 3  
+False Negatives = 30  
+Precision = 0.956  
+Recall = 0.684  
+F1-score = 0.798
 
-At threshold `0.3`:
+The low number of False Positives resulted in high Precision, meaning that most transactions predicted as fraudulent were actually fraudulent.
 
-```text
-False Positives = 7
-False Negatives = 23
-Recall          = 0.758
-Precision       = 0.911
-F1              = 0.828
-```
+However, the model still produced 30 False Negatives, meaning that some fraudulent transactions were classified as legitimate.
 
-Lowering the threshold made the model more likely to classify a transaction as fraudulent.
+For this fraud detection problem, False Negatives are particularly important because they represent fraudulent transactions that were not detected. Therefore, while Precision is important to avoid unnecessarily flagging legitimate transactions, Recall is also important to reduce missed fraud cases.
 
-As a result:
-
-```text
-False Negatives: 30 → 23  ↓
-False Positives:  3 → 7   ↑
-Recall:           0.684 → 0.758 ↑
-Precision:        0.956 → 0.911 ↓
-F1-score:         0.798 → 0.828 ↑
-```
-
-Therefore, we accepted a small increase in False Positives in exchange for detecting more fraudulent transactions.
-
-For a fraud detection system, this is a reasonable trade-off because missing an actual fraudulent transaction (False Negative) can be more costly than incorrectly flagging a legitimate transaction (False Positive).
+Overall, the baseline results showed that there is a trade-off between minimizing False Positives and minimizing False Negatives, and F1-score provides a useful balance between Precision and Recall.
