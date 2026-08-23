@@ -295,15 +295,20 @@ cross_validate_threshold(
 # ==============================================================
 # Final Model
 # ==============================================================
+scaler = get_scaler()
 
-final_knn_pipeline = Pipeline([
-    ("scaler", get_scaler()),
-    ("model", KNeighborsClassifier(n_neighbors=5))
-])
+X_tr_scaled = scaler.fit_transform(X_train)
 
-final_knn_pipeline.fit(X_train, y_train)
+final_knn_model = KNeighborsClassifier(n_neighbors=5)
+
+final_knn_model.fit(X_tr_scaled, y_train)
 
 joblib.dump(
-    final_knn_pipeline,
+    final_knn_model,
     "models/model.pkl"
+)
+
+joblib.dump(
+    scaler,
+    "models/scaler.pkl"
 )
