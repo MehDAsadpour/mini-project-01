@@ -4,11 +4,16 @@ import pandas as pd
 
 
 MODEL_PATH = "models/model.pkl"
+SCALER_PATH = "models/scaler.pkl"
 THRESHOLD = 0.3
 
 
 def load_model():
     return joblib.load(MODEL_PATH)
+
+
+def load_scaler():
+    return joblib.load(SCALER_PATH)
 
 
 def load_input(path):
@@ -18,8 +23,9 @@ def load_input(path):
     return pd.DataFrame([data])
 
 
-def predict(model, X):
-    probability = model.predict_proba(X)[:, 1][0]
+def predict(model,scaler, X):
+    X_scaled = scaler.transform(X)
+    probability = model.predict_proba(X_scaled)[:, 1][0]
 
     class_id = int(probability >= THRESHOLD)
 
@@ -45,9 +51,11 @@ def save_output(result, path):
 def main():
     model = load_model()
 
+    scaler = load_scaler()
+
     X = load_input("examples/input.json")
 
-    result = predict(model, X)
+    result = predict(model,scaler, X)
 
     save_output(result, "examples/output.json")
 
